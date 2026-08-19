@@ -12,11 +12,6 @@ PoCはゲーム完成が目的ではありません。
 
 対象：メインキャラクター「ひかえめくん」。
 
-正式仕様：
-
-- `docs/character-spec-player.md`
-- `docs/rive/player-character-parts-v1.md`
-
 ## 3. 必須表現
 
 PoCでは以下を実現する。
@@ -144,16 +139,17 @@ Rive内で毎キャラクター手動リグが必要になる場合は、テン�
 
 完了：
 
-1. キャラクター詳細仕様 v1.0
-2. Rive用パーツ分解仕様 v1.0
-3. Codex用PoC実装プロンプト
+- `docs/character-spec-player.md` — 正式キャラクター仕様
+- `docs/rive/player-character-parts-v1.md` — Rive用パーツ分解・リグ仕様
+- `docs/prompts/codex-rive-pixijs-poc.md` — Codex用PoC実装指示
+- `docs/art/references/player/02-character-reference-approved.png` — 採用基準アート
+- `docs/art/references/player/03-rive-parts-guide.png` — Riveパーツ分解参考図
 
-次の工程：
+## 12. 次の工程
 
-1. 仕様準拠の基準アートを生成・選定
-2. 正面 / 3/4 / 表情で同一性を確認
-3. Rive用パーツ画像を準備
-4. 1体だけRiveでリグ化
-5. `docs/prompts/codex-rive-pixijs-poc.md` を使ってPixiJS連携を実装
-6. Android実機レビュー
-7. PoC合否判定
+1. Riveインポート用の実パーツ素材一式を作成
+2. 重ね合わせて基準アートとの一致を確認
+3. 1体だけRiveでリグ化
+4. PixiJSから連続値制御
+5. Android実機レビュー
+6. PoC合否判定
