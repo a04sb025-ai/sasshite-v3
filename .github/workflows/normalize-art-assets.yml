@@ -1,0 +1,70 @@
+name: Normalize art reference assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/art/references/player/*.jpg'
+      - '.github/workflows/normalize-art-assets.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Convert JPEG references to PNG
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          root = Path('docs/art/references/player')
+          for src in sorted(root.glob('*.jpg')):
+              dst = src.with_suffix('.png')
+              with Image.open(src) as im:
+                  # Store a real PNG without changing the reference image's geometry.
+                  # This fixes browser preview compatibility while avoiding another
+                  # lossy encode. Future Rive source art is stored separately.
+                  if im.mode not in ('RGB', 'RGBA'):
+                      im = im.convert('RGBA' if 'A' in im.getbands() else 'RGB')
+                  im.save(dst, format='PNG', optimize=True)
+              print(f'{src} -> {dst}')
+          PY
+
+      - name: Update reference README and remove JPEG copies
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          readme = Path('docs/art/references/player/README.md')
+          if readme.exists():
+              text = readme.read_text(encoding='utf-8')
+              text = text.replace('.jpg', '.png')
+              readme.write_text(text, encoding='utf-8')
+          PY
+          git rm -f docs/art/references/player/*.jpg
+          git add docs/art/references/player/*.png docs/art/references/player/README.md
+
+      - name: Commit normalized assets
+        run: |
+          if git diff --cached --quiet; then
+            echo 'No asset changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: normalize player art references to PNG'
+          git push
