@@ -30,21 +30,13 @@
 
 ## 仕様書
 
-### Core
-
 - `docs/concept.md` — 作品コンセプト
-- `docs/character-spec-player.md` — プレイヤーキャラクター正式詳細仕様 v1.0
+- `docs/character-spec-player.md` — メインキャラクター「ひかえめくん」正式仕様
+- `docs/rive/player-character-parts-v1.md` — Rive用パーツ分解・リグ仕様
 - `docs/art/visual-guidelines.md` — ビジュアル方針
-
-### Rive / PoC
-
-- `docs/rive/player-character-parts-v1.md` — Rive用パーツ分解・リグ仕様 v1.0
-- `docs/poc/rive-pixijs-poc.md` — Rive + PixiJS PoC仕様
-- `docs/prompts/codex-rive-pixijs-poc.md` — Codexへ渡すPoC実装プロンプト
-
-### Compatibility
-
-- `docs/characters/hikamekun.md` — 旧キャラクター仕様から正式仕様への案内
+- `docs/art/references/player/` — 採用基準アートとRive参考図
+- `docs/poc/rive-pixijs-poc.md` — Rive + PixiJS PoC
+- `docs/prompts/codex-rive-pixijs-poc.md` — Codex用PoC実装指示
 
 ## 開発ルール
 
