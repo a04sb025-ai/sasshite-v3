@@ -10,7 +10,14 @@
 2. `docs/concept.md`
 3. 変更対象に関係する `docs/` 配下の仕様書
 
-キャラクターを扱う場合は `docs/characters/hikamekun.md`、ビジュアルを扱う場合は `docs/art/visual-guidelines.md`、PoCを扱う場合は `docs/poc/rive-pixijs-poc.md` を必ず参照してください。
+キャラクターを扱う場合は以下を必ず参照してください。
+
+- `docs/character-spec-player.md` — プレイヤーキャラクターの正式詳細仕様
+- `docs/rive/player-character-parts-v1.md` — Rive用パーツ・リグ仕様
+
+ビジュアルを扱う場合は `docs/art/visual-guidelines.md`、PoCを扱う場合は `docs/poc/rive-pixijs-poc.md` を必ず参照してください。
+
+`docs/characters/hikamekun.md` は互換用の案内であり、詳細仕様のSource of Truthではありません。
 
 ## 2. 仕様を勝手に変えない
 
