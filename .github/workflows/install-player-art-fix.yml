@@ -1,0 +1,72 @@
+name: Install player art fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'player-art-fix.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate and install reference art
+        run: |
+          set -euo pipefail
+          test -f player-art-fix.zip
+          rm -rf /tmp/player-art-fix
+          mkdir -p /tmp/player-art-fix
+          unzip -q player-art-fix.zip -d /tmp/player-art-fix
+
+          python - <<'PY'
+          from pathlib import Path
+          import json, struct, hashlib
+
+          root = Path('/tmp/player-art-fix')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          required = [
+              '01-character-concepts.png',
+              '02-character-reference-approved.png',
+              '03-rive-parts-guide.png',
+          ]
+
+          for name in required:
+              p = root / name
+              data = p.read_bytes()
+              if data[:8] != b'\x89PNG\r\n\x1a\n':
+                  raise SystemExit(f'{name}: invalid PNG signature')
+              width, height = struct.unpack('>II', data[16:24])
+              expected = manifest[name]
+              digest = hashlib.sha256(data).hexdigest()
+              if width != expected['width'] or height != expected['height']:
+                  raise SystemExit(f'{name}: unexpected dimensions {width}x{height}')
+              if digest != expected['sha256']:
+                  raise SystemExit(f'{name}: sha256 mismatch')
+              print(f'{name}: OK {width}x{height} sha256={digest}')
+          PY
+
+          mkdir -p docs/art/references/player
+          cp -f /tmp/player-art-fix/01-character-concepts.png docs/art/references/player/
+          cp -f /tmp/player-art-fix/02-character-reference-approved.png docs/art/references/player/
+          cp -f /tmp/player-art-fix/03-rive-parts-guide.png docs/art/references/player/
+
+      - name: Commit verified images
+        run: |
+          set -euo pipefail
+          git rm -f player-art-fix.zip
+          git add docs/art/references/player/01-character-concepts.png \
+                  docs/art/references/player/02-character-reference-approved.png \
+                  docs/art/references/player/03-rive-parts-guide.png
+          # One-shot installer: remove itself after successful installation.
+          git rm -f .github/workflows/install-player-art-fix.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: install verified high-resolution player art references'
+          git push
