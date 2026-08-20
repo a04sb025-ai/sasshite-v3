@@ -1,4 +1,5 @@
 import { Application, Assets, Container, Graphics, Sprite, Texture } from 'pixi.js';
+import approvedElevatorStageUrl from '../../../docs/art/references/stages/elevator/elevator-stage-v1-approved.png?url';
 import type { ElevatorStageSnapshot } from '../../game/elevator/types';
 import { getDoorLayout } from './doorLayout';
 
@@ -8,6 +9,8 @@ const HEIGHT = 1536;
 export class ElevatorStageView {
   private readonly app = new Application();
   private readonly scene = new Container();
+  private readonly doors = new Container();
+  private readonly doorMask = new Graphics();
   private readonly leftDoor = new Graphics();
   private readonly rightDoor = new Graphics();
 
@@ -22,11 +25,15 @@ export class ElevatorStageView {
       this.scene.position.set((this.app.screen.width - WIDTH * scale) / 2, (this.app.screen.height - HEIGHT * scale) / 2);
     };
     this.app.renderer.on('resize', fitScene); fitScene();
-    const source = await Assets.load<Texture>('/assets/stages/elevator/elevator-stage-v1-approved.png');
+    const source = await Assets.load<Texture>(approvedElevatorStageUrl);
     const background = new Sprite(source); background.width = WIDTH; background.height = HEIGHT; this.scene.addChild(background);
 
     this.drawDoor(this.leftDoor, true); this.drawDoor(this.rightDoor, false);
-    this.scene.addChild(this.leftDoor, this.rightDoor);
+    const { openingLeft, openingRight } = getDoorLayout(0);
+    this.doorMask.rect(openingLeft, 140, openingRight - openingLeft, 1095).fill(0xffffff);
+    this.doors.addChild(this.leftDoor, this.rightDoor);
+    this.doors.mask = this.doorMask;
+    this.scene.addChild(this.doors, this.doorMask);
   }
 
   render(snapshot: ElevatorStageSnapshot): void {

@@ -6,6 +6,11 @@ export interface DoorLayout {
   openingRight: number;
 }
 
+export interface VisibleDoorRegion {
+  start: number;
+  end: number;
+}
+
 const OPENING_LEFT = 255;
 const OPENING_RIGHT = 769;
 const DOOR_WIDTH = (OPENING_RIGHT - OPENING_LEFT) / 2;
@@ -22,5 +27,22 @@ export function getDoorLayout(doorProgress: number): DoorLayout {
     doorWidth: DOOR_WIDTH,
     openingLeft: OPENING_LEFT,
     openingRight: OPENING_RIGHT,
+  };
+}
+
+/** Returns the portions of both panels visible inside the masked doorway. */
+export function getVisibleDoorRegions(doorProgress: number): {
+  left: VisibleDoorRegion;
+  right: VisibleDoorRegion;
+} {
+  const layout = getDoorLayout(doorProgress);
+  const visibleRegion = (start: number, end: number): VisibleDoorRegion => {
+    const clippedStart = Math.max(layout.openingLeft, start);
+    const clippedEnd = Math.min(layout.openingRight, end);
+    return { start: clippedStart, end: Math.max(clippedStart, clippedEnd) };
+  };
+  return {
+    left: visibleRegion(layout.leftX, layout.leftX + layout.doorWidth),
+    right: visibleRegion(layout.rightX, layout.rightX + layout.doorWidth),
   };
 }
