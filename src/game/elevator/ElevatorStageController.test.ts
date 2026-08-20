@@ -6,7 +6,9 @@ import { getDoorLayout, getVisibleDoorRegions } from '../../rendering/pixi/doorL
 describe('ElevatorStageController', () => {
   it('naturally begins closing after the open wait without input', () => {
     const stage = new ElevatorStageController();
-    stage.update(ELEVATOR_CONFIG.openHoldMs + ELEVATOR_CONFIG.openGraceMs + 1);
+    // The controller advances in <=16ms internal steps, so allow one frame of
+    // tolerance beyond the configured hold + grace boundary.
+    stage.update(ELEVATOR_CONFIG.openHoldMs + ELEVATOR_CONFIG.openGraceMs + 16);
     expect(stage.snapshot().doorState).toBe('closing_soft');
   });
   it('close skips the grace period but does not close instantly', () => {
