@@ -1,2 +1,6 @@
 import { defineConfig } from 'vite';
-export default defineConfig({ test: { environment: 'node' } });
+
+export default defineConfig({
+  base: '/sasshite-v3/',
+  test: { environment: 'node' },
+});
