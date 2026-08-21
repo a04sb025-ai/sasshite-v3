@@ -7,6 +7,11 @@ async function bootstrap(): Promise<void> {
   const host = document.querySelector<HTMLElement>('#app');
   if (!host) throw new Error('App host is missing');
 
+  const publicAssetUrl = (path: string): string => `${import.meta.env.BASE_URL}${path}`;
+  host.style.setProperty('--button-default-image', `url("${publicAssetUrl('assets/stages/elevator/ui/button-default.svg')}")`);
+  host.style.setProperty('--button-active-image', `url("${publicAssetUrl('assets/stages/elevator/ui/button-active.svg')}")`);
+  host.style.setProperty('--button-disabled-image', `url("${publicAssetUrl('assets/stages/elevator/ui/button-disabled.svg')}")`);
+
   host.insertAdjacentHTML('beforeend', `
     <div class="stage-label" aria-hidden="true">もう一人、来る？</div>
     <div class="controls" aria-label="どうする？">
