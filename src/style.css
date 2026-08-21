@@ -5,11 +5,11 @@ html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; overs
 canvas { display: block; width: 100% !important; height: 100% !important; object-fit: contain; }
 .stage-label { position: absolute; z-index: 2; top: max(18px, env(safe-area-inset-top)); left: 50%; translate: -50%; padding: .45rem 1rem; border: 1px solid #fff8; border-radius: 999px; background: #34323099; color: #fffdf7; font-weight: 650; font-size: clamp(.78rem, 3.2vw, 1rem); letter-spacing: .06em; white-space: nowrap; backdrop-filter: blur(5px); }
 .controls { position: absolute; z-index: 2; inset: auto 3.5% max(14px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.2%; padding: 2.4%; border: 1px solid #fff7; border-radius: 24px; background: linear-gradient(#494746d9, #272727e8); box-shadow: 0 10px 28px #0008; backdrop-filter: blur(8px); }
-.elevator-button { appearance: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15rem; width: 100%; min-width: 0; min-height: 72px; padding: .45rem .2rem; border: 0; border-radius: 18px; background: url('/assets/stages/elevator/ui/button-default.svg') center/100% 100% no-repeat; color: #323638; font: 700 clamp(.68rem, 3vw, .95rem)/1.1 system-ui, sans-serif; letter-spacing: .03em; touch-action: none; -webkit-tap-highlight-color: transparent; }
+.elevator-button { appearance: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15rem; width: 100%; min-width: 0; min-height: 72px; padding: .45rem .2rem; border: 0; border-radius: 18px; background: var(--button-default-image) center/100% 100% no-repeat; color: #323638; font: 700 clamp(.68rem, 3vw, .95rem)/1.1 system-ui, sans-serif; letter-spacing: .03em; touch-action: none; -webkit-tap-highlight-color: transparent; }
 .control-icon { color: #596164; font-size: clamp(.78rem, 3vw, 1rem); line-height: 1; }
 .elevator-button:focus-visible { outline: 3px solid #d9ebf4; outline-offset: 2px; }
-.elevator-button:active { translate: 0 2px; background-image: url('/assets/stages/elevator/ui/button-active.svg'); }
-.elevator-button:disabled { color: #777; background-image: url('/assets/stages/elevator/ui/button-disabled.svg'); }
+.elevator-button:active { translate: 0 2px; background-image: var(--button-active-image); }
+.elevator-button:disabled { color: #777; background-image: var(--button-disabled-image); }
 .elevator-button.wait { color: #2d4c59; }
 .reset { position: absolute; z-index: 2; top: max(10px, env(safe-area-inset-top)); right: 10px; width: 44px; height: 44px; border: 1px solid #fff5; border-radius: 50%; background: #20212466; color: #fffb; font-size: 22px; opacity: .35; }
 @media (min-aspect-ratio: 2/3) { #app { width: min(100vw, 68.2vh); } }
