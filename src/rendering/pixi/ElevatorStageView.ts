@@ -6,6 +6,8 @@ import { getDoorLayout } from './doorLayout';
 const WIDTH = 1024;
 const HEIGHT = 1536;
 
+const publicAssetUrl = (path: string): string => `${import.meta.env.BASE_URL}${path}`;
+
 export class ElevatorStageView {
   private readonly app = new Application();
   private readonly scene = new Container();
@@ -27,8 +29,8 @@ export class ElevatorStageView {
     this.app.renderer.on('resize', fitScene); fitScene();
     const [source, leftDoorTexture, rightDoorTexture] = await Promise.all([
       Assets.load<Texture>(approvedElevatorStageUrl),
-      Assets.load<Texture>('/assets/stages/elevator/doors/door-left.svg'),
-      Assets.load<Texture>('/assets/stages/elevator/doors/door-right.svg'),
+      Assets.load<Texture>(publicAssetUrl('assets/stages/elevator/doors/door-left.svg')),
+      Assets.load<Texture>(publicAssetUrl('assets/stages/elevator/doors/door-right.svg')),
     ]);
     const background = new Sprite(source); background.width = WIDTH; background.height = HEIGHT; this.scene.addChild(background);
 
