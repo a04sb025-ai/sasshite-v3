@@ -8,9 +8,11 @@ async function bootstrap(): Promise<void> {
   if (!host) throw new Error('App host is missing');
 
   host.insertAdjacentHTML('beforeend', `
-    <div class="controls" aria-label="エレベーター操作盤">
-      <button class="elevator-button open" aria-label="開く" data-control="open"><span aria-hidden="true">◀│▶</span></button>
-      <button class="elevator-button close" aria-label="閉じる" data-control="close"><span aria-hidden="true">▶│◀</span></button>
+    <div class="stage-label" aria-hidden="true">もう一人、来る？</div>
+    <div class="controls" aria-label="どうする？">
+      <button class="elevator-button open" data-control="open"><span class="control-icon" aria-hidden="true">◀│▶</span><span>開ける</span></button>
+      <button class="elevator-button close" data-control="close"><span class="control-icon" aria-hidden="true">▶│◀</span><span>閉める</span></button>
+      <button class="elevator-button wait" data-control="wait"><span class="control-icon" aria-hidden="true">…</span><span>様子を見る</span></button>
     </div>
     <button class="reset" aria-label="場面を最初から見る">↻</button>
   `);
@@ -19,9 +21,14 @@ async function bootstrap(): Promise<void> {
   const view = new ElevatorStageView();
   await view.mount(host);
 
-  const openButton = host.querySelector<HTMLButtonElement>('[data-control="open"]');
-  const closeButton = host.querySelector<HTMLButtonElement>('[data-control="close"]');
-  if (!openButton || !closeButton) throw new Error('Elevator controls are missing');
+  const control = (name: string): HTMLButtonElement => {
+    const button = host.querySelector<HTMLButtonElement>(`[data-control="${name}"]`);
+    if (!button) throw new Error(`Elevator control is missing: ${name}`);
+    return button;
+  };
+  const openButton = control('open');
+  const closeButton = control('close');
+  const waitButton = control('wait');
 
   const beginOpen = (event: PointerEvent): void => { event.preventDefault(); openButton.setPointerCapture(event.pointerId); controller.pressOpen(); };
   const endOpen = (event: PointerEvent): void => { event.preventDefault(); if (openButton.hasPointerCapture(event.pointerId)) openButton.releasePointerCapture(event.pointerId); controller.releaseOpen(); };
@@ -30,12 +37,16 @@ async function bootstrap(): Promise<void> {
   openButton.addEventListener('pointercancel', endOpen);
   openButton.addEventListener('lostpointercapture', () => controller.releaseOpen());
   closeButton.addEventListener('pointerdown', (event) => { event.preventDefault(); controller.pressClose(); });
+  waitButton.addEventListener('pointerdown', (event) => { event.preventDefault(); controller.pressWait(); });
   host.querySelector('.reset')?.addEventListener('click', () => controller.reset(routeFromLocation()));
 
   let previous = performance.now();
   function frame(now: number): void {
     const delta = Math.min(50, now - previous); previous = now;
-    view.render(controller.update(delta));
+    const snapshot = controller.update(delta);
+    view.render(snapshot);
+    openButton.disabled = snapshot.doorState === 'closed';
+    closeButton.disabled = snapshot.doorState === 'closed';
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

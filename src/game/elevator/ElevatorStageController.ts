@@ -51,6 +51,10 @@ export class ElevatorStageController {
     this.startClosing();
   }
 
+  pressWait(): void {
+    this.emit('explicit_non_intervention', { doorProgress: this.doorProgress });
+  }
+
   update(deltaMs: number): ElevatorStageSnapshot {
     if (deltaMs < 0) throw new Error('deltaMs must be non-negative');
     let remaining = deltaMs;
