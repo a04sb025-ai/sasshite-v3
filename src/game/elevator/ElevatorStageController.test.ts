@@ -15,6 +15,12 @@ describe('ElevatorStageController', () => {
     const stage = new ElevatorStageController(); stage.pressClose();
     expect(stage.snapshot()).toMatchObject({ doorState: 'closing_soft', doorProgress: 0 });
   });
+  it('records the explicit wait choice without changing world progression', () => {
+    const stage = new ElevatorStageController();
+    stage.update(500); stage.pressWait();
+    expect(stage.snapshot()).toMatchObject({ doorState: 'open_grace', doorProgress: 0 });
+    expect(stage.getEvents().at(-1)).toMatchObject({ type: 'explicit_non_intervention', atMs: 500 });
+  });
   it('can reverse a partially closed door, including commit', () => {
     const stage = new ElevatorStageController(); stage.pressClose(); stage.update(1500); stage.pressOpen();
     expect(stage.snapshot().doorState).toBe('opening'); stage.update(1000);
